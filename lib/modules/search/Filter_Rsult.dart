@@ -12,6 +12,7 @@ class Filter_Result extends StatelessWidget {
   Filter_Result(this.postmodel, {Key? key}) : super(key: key);
   PostModel? postmodel;
 
+
   PageController AdsImages = PageController();
   @override
   Widget build(BuildContext context) {
