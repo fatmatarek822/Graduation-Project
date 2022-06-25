@@ -52,13 +52,13 @@ class ChatDetailsScreen extends StatelessWidget {
                         children: [
                           MaterialButton(
                             onPressed: () {
-                            //  navigateTo(context, videoCall());
+                              navigateTo(context, videoCall());
                             },
                             child: const Icon(Icons.video_call_outlined),
                           ),
                           MaterialButton(
                             onPressed: () {
-                            //  navigateTo(context, audioCall());
+                              navigateTo(context, audioCall());
                             },
                             child: const Icon(Icons.phone),
                           ),

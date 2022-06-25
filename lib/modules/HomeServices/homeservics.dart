@@ -40,6 +40,7 @@ class AppServices extends StatelessWidget {
                 ),
                 body: TabBarView(children: [
                   SingleChildScrollView(
+                    physics: BouncingScrollPhysics(),
                     child: Column(
                       children: [
                         ConditionalBuilder(
@@ -101,6 +102,7 @@ class AppServices extends StatelessWidget {
                     ),
                   ),
                   SingleChildScrollView(
+                    physics: BouncingScrollPhysics(),
                     child: Column(
                       children: [
                         ConditionalBuilder(
@@ -179,8 +181,6 @@ class AppServices extends StatelessWidget {
       },
       child: Expanded(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Padding(
               padding: EdgeInsets.only(right: appPadding / 3),
@@ -191,41 +191,46 @@ class AppServices extends StatelessWidget {
                   color: Colors.white,
                 ),
                 width: double.infinity,
-                height: 130.0,
+                height: 146.0,
                 // color: Colors.grey[300],
                 child: Expanded(
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Image.network(
                         '${model!.image}',
                         width: 100,
-                        height: 160,
+                        height: 150,
                       ),
-                      const SizedBox(width: 8.0),
-                      Column(
-                        children: [
-                          Text(' ${model.companyName}  '.tr().toString()),
-                          const SizedBox(height: 8.0),
-                          Text(' ${model.serviceType} '),
-                          const SizedBox(height: 8.0),
-                          Text(
-                            '  ${model.location}',
-                            style: const TextStyle(fontSize: 10.0),
-                          ),
-                          const SizedBox(height: 10.0),
-                          RatingBarIndicator(
-                            rating: model.rate!,
-                            itemBuilder: (context, index) => const Icon(
-                              Icons.star,
-                              color: Colors.amber,
+                      Spacer(),
+                      Flexible(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                             Text(' ${model.companyName}  '.tr().toString(),
+                               overflow: TextOverflow.ellipsis,
+                               maxLines: 2,
+                             ),
+                             const SizedBox(height: 8.0),
+                            Text('${model.serviceType} '),
+                            const SizedBox(height: 8.0),
+                            Text(
+                              '  ${model.location}',
+                              style: const TextStyle(fontSize: 10.0, overflow: TextOverflow.ellipsis),
+                              maxLines: 2,
                             ),
-                            itemCount: 5,
-                            itemSize: 20.0,
-                            direction: Axis.horizontal,
-                          ),
-                        ],
+                            const SizedBox(height: 10.0),
+                            RatingBarIndicator(
+                              rating: model.rate!,
+                              itemBuilder: (context, index) => const Icon(
+                                Icons.star,
+                                color: Colors.amber,
+                              ),
+                              itemCount: 5,
+                              itemSize: 20.0,
+                              direction: Axis.horizontal,
+                            ),
+                          ],
+                        ),
                       )
                     ],
                   ),

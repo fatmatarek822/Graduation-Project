@@ -23,6 +23,7 @@ import 'package:realestateapp/modules/chat/chat_screen.dart';
 import 'package:realestateapp/modules/cubit/states.dart';
 import 'package:realestateapp/modules/favourite/favourite_screen.dart';
 import 'package:realestateapp/modules/home/home_screen.dart';
+import 'package:realestateapp/modules/home_furniture/furniture_screen.dart';
 import 'package:realestateapp/modules/home_furniture/new_furniture.dart';
 import 'package:realestateapp/modules/login/login_screen.dart';
 import 'package:realestateapp/modules/setting/myaccount.dart';
@@ -116,15 +117,21 @@ class AppCubit extends Cubit<AppStates> {
     FavouriteScreen(),
     ChatScreen(),
     useraccount(),
-    NewHomeFurniture()
+    FurnitureScreen()
   ];
 
   int currentIndex = 0;
 
   void ChangeBottomNav(int index) {
     if (index == 3) getAllUsers();
-    currentIndex = index;
-    emit(AppChangeBottomNavState());
+    if(index == 6)
+    {
+      emit(OpenFurnitureScreenState());
+    }else
+      {
+        currentIndex = index;
+        emit(AppChangeBottomNavState());
+      }
   }
 
   File? profileImage;
@@ -324,7 +331,7 @@ class AppCubit extends Cubit<AppStates> {
 
 
   void CreateFurniturePost({
-    required String nameFurniture,
+    required String namefurniture,
     required String description,
     required String price,
     required List furnitureImage,
@@ -335,7 +342,7 @@ class AppCubit extends Cubit<AppStates> {
       name: userModel!.name,
       uid: userModel!.uid,
       image: userModel!.image,
-      namefurniture: nameFurniture,
+      namefurniture: namefurniture,
       description: description,
       price: price,
       furnitureImage: imagesUrl,
@@ -850,7 +857,7 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   void uploadFurnitureandimage({
-    required String nameFurniture,
+    required String namefurniture,
     required String description,
     required String price,
     required String date,
@@ -874,7 +881,7 @@ class AppCubit extends Cubit<AppStates> {
           }).then((value) {
             if (imagesUrl.length == addImages.length) {
               CreateFurniturePost(
-                nameFurniture: nameFurniture,
+                namefurniture: namefurniture,
                 description: description,
                 price: price,
                 furnitureImage: imagesUrl,
@@ -1012,29 +1019,54 @@ class AppCubit extends Cubit<AppStates> {
   }
 
 
-  FurnitureModel? furnitureModel;
-  List<String> FurnitureList = [];
-  List<FurnitureModel> Furniture = [];
-  void getFurniture() {
-    Furniture = [];
-    FurnitureList = [];
-    FirebaseFirestore.instance.collection('furniture').get().then((value) {
-      value.docs.forEach((element) {
-        Furniture.add(FurnitureModel.fromJson(element.data()));
-        print(element.data());
-      });
-      for (int i = 0; i < Furniture.length; i++) {
-        FurnitureList.add(Furniture[i].namefurniture.toString());
-      }
-      emit(AppGetFurnitureSuccessState());
 
-      print(Furniture);
-      print(FurnitureList);
-    }).catchError((error) {
-      print(error.toString());
-      emit(AppGetFurnitureErrorState(error));
+  List<FurnitureModel> furnitureModel = [];
+  List<String> furnituresId = [];
+  FurnitureModel? furniture;
+  void getFurnitures() {
+    furnitureModel = [];
+    emit(AppGetFurnituresLoadingState());
+    FirebaseFirestore.instance
+        .collection('furniture')
+        .orderBy('date', descending: true)
+        .snapshots()
+        .listen((event) {
+      event.docs.forEach((element) {
+        print(element.id);
+        furnituresId.add(element.id);
+        //  comments.add(SocialCommentPostModel.fromJson(element.data()));
+        furnitureModel.add(FurnitureModel.fromJson(element.data()));
+      });
+      emit(AppGetFurnitureSuccessState());
     });
+    emit(AppGetFurnitureErrorState(Error.safeToString(Error)));
   }
+
+
+  // FurnitureModel? furnitureModel;
+  // List<String> FurnitureList = [];
+  // List<FurnitureModel> Furniture = [];
+  // void getFurniture() {
+  //   Furniture = [];
+  //   FurnitureList = [];
+  //   emit(AppGetFurnituresLoadingState());
+  //   FirebaseFirestore.instance.collection('furniture').get().then((value) {
+  //     value.docs.forEach((element) {
+  //       Furniture.add(FurnitureModel.fromJson(element.data()));
+  //       print(element.data());
+  //     });
+  //     for (int i = 0; i < Furniture.length; i++) {
+  //       FurnitureList.add(Furniture[i].namefurniture.toString());
+  //     }
+  //     emit(AppGetFurnitureSuccessState());
+  //
+  //     print(Furniture);
+  //     print(FurnitureList);
+  //   }).catchError((error) {
+  //     print(error.toString());
+  //     emit(AppGetFurnitureErrorState(error));
+  //   });
+  // }
 
 //////////////// send notification
   void getUserToken() async {

@@ -12,6 +12,7 @@ class FurnitureModel {
   bool? isnegotiate;
   String? furniture;
   String? type;
+  String? place;
 
   FurnitureModel(
       {this.name,
@@ -27,13 +28,14 @@ class FurnitureModel {
         this.isnegotiate,
         this.furniture,
         this.type,
+        this.place,
       });
 
   FurnitureModel.fromJson(Map<String, dynamic> json) {
     name = json['name'];
     uid = json['uid'];
     image = json['image'];
-    namefurniture = json['namePost'];
+    namefurniture = json['namefurniture'];
     description = json['description'];
     furnitureImage = json['furnitureImage'];
     price = json['price'];
@@ -43,6 +45,7 @@ class FurnitureModel {
     isnegotiate = json['isnegatiated'];
     furniture = json['furniture'];
     type = json['type'];
+    place =json['place'];
   }
 
   Map<String, dynamic> toMap() {
@@ -60,6 +63,7 @@ class FurnitureModel {
       'isnegotiate': isnegotiate,
       'furniture' : furniture,
       'type' : type,
+      'place' :place,
     };
   }
 }

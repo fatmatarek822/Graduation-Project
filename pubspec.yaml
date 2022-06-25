@@ -73,7 +73,7 @@ dependencies:
   firebase_messaging: ^11.4.0
 
   #agora
-  #agora_rtc_engine: ^5.0.1
+  agora_rtc_engine: ^5.0.1
   permission_handler: 
 
   

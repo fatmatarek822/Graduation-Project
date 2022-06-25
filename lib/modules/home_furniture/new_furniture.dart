@@ -10,6 +10,7 @@ import 'package:realestateapp/models/BundleModel.dart';
 import 'package:realestateapp/modules/cubit/cubit.dart';
 import 'package:realestateapp/modules/cubit/states.dart';
 import 'package:realestateapp/modules/home/home_screen.dart';
+import 'package:realestateapp/modules/home_furniture/furniture_screen.dart';
 import 'package:realestateapp/modules/map/map_screen.dart';
 import 'package:realestateapp/modules/new_post/userLocation.dart';
 import 'package:realestateapp/shared/components/components.dart';
@@ -31,6 +32,8 @@ class _NewHomeFurnitureState extends State<NewHomeFurniture> {
 
   var PriceController = TextEditingController();
 
+  var PlaceController = TextEditingController();
+
   var datecontroller = TextEditingController();
 
   var phonecontroller = TextEditingController();
@@ -44,7 +47,8 @@ class _NewHomeFurnitureState extends State<NewHomeFurniture> {
           showToast(
               text: 'furniture created successfuly',
               state: ToastStates.SUCCESS);
-          AppCubit.get(context).getFurniture();
+          AppCubit.get(context).getFurnitures();
+          navigateTo(context, FurnitureScreen());
         }
       },
       builder: (context, state) {
@@ -129,22 +133,7 @@ class _NewHomeFurnitureState extends State<NewHomeFurniture> {
                             label: 'Name'.tr().toString(),
                             prefix: Icons.drive_file_rename_outline,
                           ),
-                          const SizedBox(
-                            height: 10,
-                          ),
 
-                          TextField(
-                            controller: DescriptionController,
-                            keyboardType: TextInputType.multiline,
-                            maxLines: null,
-
-                            decoration: InputDecoration(
-                                prefixIcon: const Icon(Icons.description),
-                                hintText: 'describtion'.tr().toString(),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(30),
-                                )),
-                          ),
                           const SizedBox(
                             height: 10,
                           ),
@@ -166,11 +155,30 @@ class _NewHomeFurnitureState extends State<NewHomeFurniture> {
                               const EdgeInsets.fromLTRB(10, 20, 10, 20),
                               filled: true,
                               fillColor: Colors.grey[200],
-                              hintText: 'select type  like Bedroom '
+                              hintText: 'select type of furniture'
                                   .tr()
                                   .toString(),
                             ),
                           ),
+
+
+                          const SizedBox(
+                            height: 10,
+                          ),
+
+                          TextField(
+                            controller: DescriptionController,
+                            keyboardType: TextInputType.multiline,
+                            maxLines: null,
+
+                            decoration: InputDecoration(
+                                prefixIcon: const Icon(Icons.description),
+                                hintText: 'describtion'.tr().toString(),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                )),
+                          ),
+
 
                           const SizedBox(
                             height: 10,
@@ -193,7 +201,7 @@ class _NewHomeFurnitureState extends State<NewHomeFurniture> {
                               const EdgeInsets.fromLTRB(10, 20, 10, 20),
                               filled: true,
                               fillColor: Colors.grey[200],
-                              hintText: 'select type of selling'
+                              hintText: 'Exchange or Selling'
                                   .tr()
                                   .toString(),
                             ),
@@ -269,6 +277,41 @@ class _NewHomeFurnitureState extends State<NewHomeFurniture> {
                             label: 'Price'.tr().toString(),
                             prefix: Icons.price_change_outlined,
                           ),
+
+                          const SizedBox(
+                            height: 8.0,
+                          ),
+
+                          // defaultFormField(
+                          //   controller: PlaceController,
+                          //   onChange: (location) {},
+                          //   ontap: () {
+                          //     navigateTo(context, MapScreen());
+                          //     AppCubit.get(context).getlatAndlang();
+                          //   },
+                          //   type: TextInputType.text,
+                          //   validate: (value) {
+                          //     if (value!.isEmpty) {
+                          //       return 'Please Enter place'.tr().toString();
+                          //     }
+                          //   },
+                          //   label: 'select the location'.tr().toString(),
+                          //   prefix: Icons.place,
+                          // ),
+
+                          defaultFormField(
+                            controller: PlaceController,
+                            type: TextInputType.text,
+                            validate: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please Enter Your Location'.tr().toString();
+                              }
+                            },
+                            label: 'Place'.tr().toString(),
+                            prefix: Icons.location_on_outlined,
+                          ),
+
+
                           const SizedBox(
                             height: 10,
                           ),
@@ -285,6 +328,7 @@ class _NewHomeFurnitureState extends State<NewHomeFurniture> {
                             label: 'phone '.tr().toString(),
                             prefix: Icons.price_change_outlined,
                           ),
+
                           const SizedBox(
                             height: 10.0,
                           ),
@@ -338,10 +382,10 @@ class _NewHomeFurnitureState extends State<NewHomeFurniture> {
                         if (formKey.currentState!.validate()) {
                           if (state is PostImagePickedSuccessState) {
                             AppCubit.get(context).uploadFurnitureandimage(
-                                Furniture: AppCubit.get(context).Furniture.toString(),
+                                Furniture: AppCubit.get(context).furnitureModel.toString(),
                                 isnegotiate: false,
                                 type: AppCubit.get(context).AdsFurniture.toString(),
-                                nameFurniture: NameFurnitureController.text,
+                                namefurniture: NameFurnitureController.text,
                                 description: DescriptionController.text,
                                 price: PriceController.text.toString(),
                                 date: DateTime.now().toString());

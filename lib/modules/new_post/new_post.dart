@@ -212,9 +212,7 @@ class _NewPostState extends State<NewPost> {
                           const SizedBox(
                             height: 8.0,
                           ),
-                          const SizedBox(
-                            height: 10,
-                          ),
+
                           defaultFormField(
                             controller: PlaceController,
                             onChange: (location) {},

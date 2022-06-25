@@ -15,6 +15,8 @@ class AppGetUserErrorState extends AppStates {
 
 class AppChangeBottomNavState extends AppStates {}
 
+class OpenFurnitureScreenState extends AppStates{}
+
 class ProfileImagePickedSuccessState extends AppStates {}
 
 class ProfileImagePickedErrorState extends AppStates {}
@@ -193,6 +195,8 @@ class GetTokenSuccessState extends AppStates {}
 class SendNotificationSuccessState extends AppStates {}
 
 class PickedChatImageSuccessState extends AppStates {}
+
+class AppGetFurnituresLoadingState extends AppStates{}
 
 class AppGetFurnitureSuccessState extends AppStates{}
 

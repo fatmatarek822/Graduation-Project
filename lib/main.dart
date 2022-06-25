@@ -5,6 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:realestateapp/language.dart';
 import 'package:realestateapp/layout/layout_screen.dart';
 import 'package:realestateapp/models/user_model.dart';
 import 'package:realestateapp/modules/cubit/cubit.dart';
@@ -93,6 +94,7 @@ class MyApp extends StatelessWidget {
       create: (BuildContext context) => AppCubit()
         ..getUserData()
         ..getPosts()
+        ..getFurnitures()
         ..changeAppMode(
           themeMode: isDark,
         )
@@ -113,7 +115,7 @@ class MyApp extends StatelessWidget {
               splash: const Image(
                 image: AssetImage('assets/images/applogo.png'),
               ),
-              nextScreen: startWidget!,
+              nextScreen: LanguageScreen(),
               backgroundColor: Colors.brown,
               duration: 2500,
               centered: true,

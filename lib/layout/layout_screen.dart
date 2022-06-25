@@ -5,6 +5,7 @@ import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:realestateapp/models/post_model.dart';
 import 'package:realestateapp/modules/cubit/cubit.dart';
 import 'package:realestateapp/modules/cubit/states.dart';
+import 'package:realestateapp/modules/home_furniture/furniture_screen.dart';
 import 'package:realestateapp/modules/new_post/new_post.dart';
 import 'package:realestateapp/modules/search/filtering.dart';
 import 'package:realestateapp/modules/search/search_screen.dart';
@@ -31,7 +32,13 @@ class _LayoutScreenState extends State<LayoutScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AppCubit, AppStates>(
-      listener: (context, state) {},
+      listener: (context, state)
+      {
+        if(state is OpenFurnitureScreenState)
+        {
+          navigateTo(context, FurnitureScreen());
+        }
+      },
       builder: (context, state) {
         var cubit = AppCubit.get(context);
 
@@ -143,7 +150,7 @@ class _LayoutScreenState extends State<LayoutScreen> {
                 label: 'Setting'.tr().toString(),
               ),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.add_circle_sharp),
+                  icon: Icon(Icons.weekend_outlined),
                 label: 'Furniture',
               ),
             ],
