@@ -17,6 +17,10 @@ class PostModel {
   bool? isnegotiate;
   String? type;
   String? bundel;
+  List? services;
+  String? email;
+  String? whatsApp;
+  String? phone;
 
   PostModel(
       {this.name,
@@ -36,7 +40,12 @@ class PostModel {
       this.isfav,
       this.bundel,
       this.type,
-      this.isnegotiate});
+      this.isnegotiate,
+      this.services,
+        this.email,
+        this.phone,
+        this.whatsApp,
+      });
 
   PostModel.fromJson(Map<String, dynamic> json) {
     name = json['name'];
@@ -57,6 +66,10 @@ class PostModel {
     bundel = json['bundel'];
     type = json['type'];
     isnegotiate = json['isnegatiated'];
+    services = json['services'];
+    email = json ['email'];
+    phone = json ['phone'];
+    whatsApp = json['whatsApp'];
   }
 
   Map<String, dynamic> toMap() {
@@ -79,6 +92,10 @@ class PostModel {
       'bundel': bundel,
       'isnegotiate': isnegotiate,
       'type': type,
+      'services': services,
+      'email' : email,
+      'whatsApp' :whatsApp,
+      'phone' :phone,
     };
   }
 }

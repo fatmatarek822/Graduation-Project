@@ -20,14 +20,19 @@ class LanguageScreen extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: 15,
+              height: 20,
             ),
-            Image(
-              image: AssetImage('assets/images/icon.png'),
+
+            Image(image: NetworkImage(
+              'https://cdn-icons-png.flaticon.com/512/3898/3898840.png',
+
             ),
-            Image(image: AssetImage('assets/images/icon.png'),),
+              height: 100,
+              width: 100,
+            ),
+
             SizedBox(
-              height: 15,
+              height: 20,
             ),
             Row(
               children: [

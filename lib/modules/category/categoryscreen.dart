@@ -23,6 +23,7 @@ class Categoryscreen extends StatelessWidget {
               condition: AppCubit.get(context).categories.length > 0,
               builder: (context) {
                 return ListView.separated(
+                  physics: BouncingScrollPhysics(),
                   itemBuilder: (context, index) => InkWell(
                       onTap: (() {
                         navigateTo(
@@ -31,7 +32,7 @@ class Categoryscreen extends StatelessWidget {
                                 AppCubit.get(context).categories[index]));
                       }),
                       child: BuildCategoryItems(
-                          AppCubit.get(context).categories[index])),
+                          AppCubit.get(context).categories[index], context, index)),
                   separatorBuilder: (context, index) => myDivider(),
                   itemCount: AppCubit.get(context).categories.length,
                 );
@@ -41,7 +42,7 @@ class Categoryscreen extends StatelessWidget {
         });
   }
 
-  Widget BuildCategoryItems(CategoryDataModel? categoryDataModel) {
+  Widget BuildCategoryItems(CategoryDataModel? categoryDataModel, context, index) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Expanded(
@@ -50,10 +51,11 @@ class Categoryscreen extends StatelessWidget {
             Row(
               children: [
                 Image(
-                  width: 100,
+                  width: 80,
                   height: 80,
-                  image: NetworkImage('${categoryDataModel!.categoryImage}'),
+                  image: NetworkImage('${categoryDataModel!.categoryImage}',),
                   fit: BoxFit.cover,
+                    color: AppCubit.get(context).isDark? Colors.black : Colors.white,
                 ),
                 const SizedBox(
                   width: 8.0,
@@ -66,8 +68,15 @@ class Categoryscreen extends StatelessWidget {
                 ),
                 const Spacer(),
                 IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.arrow_forward_ios)),
+                    onPressed: ()
+                    {
+                      navigateTo(
+                          context,
+                          rentcategory(
+                              AppCubit.get(context).categories[index]));
+                    },
+                    icon: const Icon(Icons.arrow_forward_ios),
+                ),
               ],
             ),
           ],

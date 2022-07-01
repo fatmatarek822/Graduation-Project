@@ -10,6 +10,7 @@ import 'package:realestateapp/modules/cubit/states.dart';
 import 'package:realestateapp/modules/home/adsdetails.dart';
 import 'package:realestateapp/modules/search/Filter_Rsult.dart';
 import 'package:realestateapp/shared/components/components.dart';
+import 'package:realestateapp/shared/styles/colors.dart';
 
 class filter_page extends StatefulWidget {
   filter_page({Key? key}) : super(key: key);
@@ -39,12 +40,11 @@ class _filter_pageState extends State<filter_page> {
   Widget build(BuildContext context) {
     return BlocConsumer<AppCubit, AppStates>(
       listener: (context, state) {
-        /* if (state is AppGetFilterADSSuccessState) {
-          int index=0;
+        if (state is AppGetFilterADSSuccessState) {
+          int index = 0;
           navigateTo(
               context, Filter_Result(AppCubit.get(context).posts[index]));
         }
-        */
       },
       builder: (context, state) {
         var postmodel = AppCubit.get(context).postModel;
@@ -53,14 +53,6 @@ class _filter_pageState extends State<filter_page> {
           child: Scaffold(
               appBar: AppBar(
                 title: const Text('filtering '),
-                bottom: const TabBar(tabs: [
-                  Tab(
-                    text: 'Rent',
-                  ),
-                  Tab(
-                    text: 'Buy',
-                  ),
-                ]),
               ),
               body: Padding(
                   padding: const EdgeInsets.all(10.0),
@@ -69,6 +61,26 @@ class _filter_pageState extends State<filter_page> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          DropdownButtonFormField(
+                            items: AppCubit.get(context).AdsType.map((value) {
+                              return DropdownMenuItem(
+                                value: value,
+                                child: Text('$value'),
+                              );
+                            }).toList(),
+                            onChanged: (newValue) {
+                              AppCubit.get(context).typelist(newValue);
+                              // do other stuff with _category
+                            },
+                            value: AppCubit.get(context).currenttypeValue,
+                            decoration: InputDecoration(
+                              contentPadding:
+                                  const EdgeInsets.fromLTRB(10, 20, 10, 20),
+                              filled: true,
+                              fillColor: Colors.grey[200],
+                              hintText: 'Select your Type  ',
+                            ),
+                          ),
                           const SizedBox(
                             height: 20,
                           ),
@@ -90,14 +102,11 @@ class _filter_pageState extends State<filter_page> {
                                   const EdgeInsets.fromLTRB(10, 20, 10, 20),
                               filled: true,
                               fillColor: Colors.grey[200],
-                              hintText: 'select your catergory ',
+                              hintText: 'Select your Category ',
                             ),
                           ),
                           const SizedBox(
                             height: 8.0,
-                          ),
-                          const SizedBox(
-                            height: 10,
                           ),
                           defaultFormField(
                             controller: PlaceController,
@@ -107,10 +116,10 @@ class _filter_pageState extends State<filter_page> {
                             type: TextInputType.text,
                             validate: (value) {
                               if (value!.isEmpty) {
-                                return 'Please Enter place';
+                                return 'Please Enter Place';
                               }
                             },
-                            label: 'select the location',
+                            label: 'Select the location',
                             prefix: Icons.place,
                           ),
                           const SizedBox(
@@ -121,7 +130,7 @@ class _filter_pageState extends State<filter_page> {
                             type: TextInputType.text,
                             validate: (value) {
                               if (value!.isEmpty) {
-                                return 'Please Enter no_of_rooms';
+                                return 'Please Enter no of rooms';
                               }
                             },
                             label: 'Number of Rooms',
@@ -135,7 +144,7 @@ class _filter_pageState extends State<filter_page> {
                             type: TextInputType.text,
                             validate: (value) {
                               if (value!.isEmpty) {
-                                return 'Please Enter no_of_bathrooms';
+                                return 'Please Enter no of bathrooms';
                               }
                             },
                             label: 'Number of Bathrooms',
@@ -144,9 +153,10 @@ class _filter_pageState extends State<filter_page> {
                           const SizedBox(
                             height: 10,
                           ),
-                          /*
-                          Text('select your prober area'),
+                          Text('Select your Proper Area'),
                           Slider(
+                              activeColor: defaultColor,
+                              inactiveColor: defaultColor,
                               value: AreaValue,
                               max: 400,
                               divisions: 10,
@@ -156,13 +166,13 @@ class _filter_pageState extends State<filter_page> {
                                   AreaValue = value;
                                 });
                               }),
-                              */
                           const SizedBox(
                             height: 10,
                           ),
-                          /*
-                          Text('select your prober price'),
+                          Text('Select your Proper Price'),
                           Slider(
+                            activeColor: defaultColor,
+                              inactiveColor: defaultColor,
                               value: currentvalue,
                               max: 10000000,
                               divisions: 5,
@@ -175,7 +185,6 @@ class _filter_pageState extends State<filter_page> {
                           const SizedBox(
                             height: 16.0,
                           ),
-                          */
                           Center(
                             child: Container(
                               width: 90.0,
@@ -183,87 +192,24 @@ class _filter_pageState extends State<filter_page> {
                               color: Colors.grey,
                               child: MaterialButton(
                                 onPressed: () {
-                                  // AppCubit.get(context).filter_search(
-                                  //   place: PlaceController.text,
-                                  //   no_bath: no_of_bathroomController.text,
-                                  //   no_rooms: no_of_roomsController.text,
-                                  //   category:
-                                  //       AppCubit.get(context).currentvalue!,
-                                  //   // area: AreaValue.toString(),
-                                  //   // price: PriceController.text
-                                  // );
-                                  // price:
-                                  //currentvalue.toString();
+                                  AppCubit.get(context).filter_search(
+                                    place: PlaceController.text,
+                                    no_bath: no_of_bathroomController.text,
+                                    no_rooms: no_of_roomsController.text,
+                                    category:
+                                        AppCubit.get(context).currentvalue!,
+                                    area: AreaValue.toString(),
+                                    price: PriceController.text,
+                                    type:
+                                        AppCubit.get(context).currenttypeValue!,
+                                  );
+                                  price:
+                                  currentvalue.toString();
                                 },
-                                child: const Text('search'),
+                                child: const Text('Search'),
                               ),
                             ),
                           ),
-                          ConditionalBuilder(
-                              condition:
-                                  AppCubit.get(context).searchADS.length > 0,
-                              builder: (context) => Stack(
-                                    alignment: AlignmentDirectional.bottomEnd,
-                                    children: [
-                                      ListView.separated(
-                                        physics: const BouncingScrollPhysics(),
-                                        shrinkWrap: true,
-                                        itemBuilder: (context, index) =>
-                                            InkWell(
-                                                onTap: (() {
-                                                  navigateTo(
-                                                      context,
-                                                      Ads_Details(
-                                                          model: AppCubit.get(
-                                                                  context)
-                                                              .posts[index]));
-                                                }),
-                                                child: BuildPost(
-                                                    AppCubit.get(context)
-                                                        .searchADS[index],
-                                                    context,
-                                                    index)),
-                                        separatorBuilder: (context, index) =>
-                                            const SizedBox(
-                                          height: 10,
-                                        ),
-                                        itemCount: AppCubit.get(context)
-                                            .searchADS
-                                            .length,
-                                      ),
-                                    ],
-                                  ),
-                              fallback: (context) =>
-                                  AppCubit.get(context).searchADS.length == 0
-                                      ? Align(
-                                          alignment: Alignment.center,
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: const [
-                                              Image(
-                                                image: NetworkImage(
-                                                    'https://correspondentsoftheworld.com/images/elements/clear/undraw_Content_structure_re_ebkv_clear.png'),
-                                                height: 300,
-                                                width: 380,
-                                                fit: BoxFit.cover,
-                                              ),
-                                              SizedBox(
-                                                height: 6.0,
-                                              ),
-                                              Text(
-                                                ' you have no posts  ',
-                                                style: TextStyle(
-                                                    fontSize: 15.0,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.grey),
-                                              ),
-                                            ],
-                                          ),
-                                        )
-                                      : CircularProgressIndicator())
                         ]),
                   ))),
         );
@@ -461,10 +407,9 @@ class _filter_pageState extends State<filter_page> {
                             const Spacer(),
                             IconButton(
                                 onPressed: () {
-                                  AppCubit.get(context).addtofav(
-                                    AppCubit.get(context).posts[index],
-                                    //AppCubit.get(context).postsId[index],
-                                  );
+                                  // AppCubit.get(context).addtofav(
+                                  //   AppCubit.get(context).posts[index],
+                                  //);
                                 },
                                 icon: const Icon(Icons.favorite,
                                     color: Colors.grey)),

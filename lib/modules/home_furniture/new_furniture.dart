@@ -1,3 +1,4 @@
+/*
 import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
@@ -406,3 +407,5 @@ class _NewHomeFurnitureState extends State<NewHomeFurniture> {
     );
   }
 }
+
+ */

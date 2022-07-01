@@ -7,6 +7,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_launch/flutter_launch.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -14,7 +15,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:realestateapp/models/BundleModel.dart';
-import 'package:realestateapp/models/furniture_model.dart';
+import 'package:realestateapp/models/contactmodel.dart';
 import 'package:realestateapp/models/post_model.dart';
 import 'package:realestateapp/models/servicesmodel.dart';
 import 'package:realestateapp/models/user_model.dart';
@@ -23,13 +24,13 @@ import 'package:realestateapp/modules/chat/chat_screen.dart';
 import 'package:realestateapp/modules/cubit/states.dart';
 import 'package:realestateapp/modules/favourite/favourite_screen.dart';
 import 'package:realestateapp/modules/home/home_screen.dart';
-import 'package:realestateapp/modules/home_furniture/furniture_screen.dart';
-import 'package:realestateapp/modules/home_furniture/new_furniture.dart';
 import 'package:realestateapp/modules/login/login_screen.dart';
 import 'package:realestateapp/modules/setting/myaccount.dart';
 import 'package:realestateapp/shared/components/components.dart';
 import 'package:realestateapp/shared/components/constant.dart';
 import 'package:realestateapp/shared/network/local/cache_helper.dart';
+import 'package:realestateapp/shared/network/remote/notification_Dio.dart';
+import 'package:uuid/uuid.dart';
 import '../../models/category_model.dart';
 import '../../models/chatmodel.dart';
 import '../../models/faviouritemodel.dart';
@@ -47,8 +48,6 @@ class AppCubit extends Cubit<AppStates> {
   String? currentvalue;
   String? currenttypeValue;
   String? currentbundleValue;
-  String? currentfurnitureValue;
-  String? CurrentTypesofSellingFurnitureValue;
 
   void dropdownlist(value) {
     currentvalue = value;
@@ -65,35 +64,11 @@ class AppCubit extends Cubit<AppStates> {
     emit(BundelListChangeState());
   }
 
-  void furniturelist(value)
-  {
-    currentfurnitureValue = value;
-    emit(FurnitureListChangeState());
-  }
-
-  void typesofsellingfurniturelist(value)
-  {
-    CurrentTypesofSellingFurnitureValue = value;
-    emit(TypesOfSellingFurnitureChangeState());
-  }
-
   List<String> AdsType = [
     'Rent',
     'Buy',
     'vacation ',
     'student',
-  ];
-
-  List<String> AdsFurniture =[
-    'BedRoom',
-    'Dining Room',
-    'Living Room',
-    'Home Decoration',
-  ];
-
-  List<String> TypesOfSellingFurniture =[
-    'Exchange',
-    'Selling',
   ];
 
   UserModel? userModel;
@@ -115,23 +90,16 @@ class AppCubit extends Cubit<AppStates> {
     Categoryscreen(),
     AppServices(),
     FavouriteScreen(),
-    ChatScreen(),
+    //ChatScreen(),
     useraccount(),
-    FurnitureScreen()
   ];
 
   int currentIndex = 0;
 
   void ChangeBottomNav(int index) {
     if (index == 3) getAllUsers();
-    if(index == 6)
-    {
-      emit(OpenFurnitureScreenState());
-    }else
-      {
-        currentIndex = index;
-        emit(AppChangeBottomNavState());
-      }
+    currentIndex = index;
+    emit(AppChangeBottomNavState());
   }
 
   File? profileImage;
@@ -244,6 +212,7 @@ class AppCubit extends Cubit<AppStates> {
       emit(PostImagePickedErrorState());
     }
   }
+
 /*
   void UploadNewPost({
     required String namePost,
@@ -298,6 +267,9 @@ class AppCubit extends Cubit<AppStates> {
     required String price,
     required List postImage,
     required String date,
+    required String email,
+    required String phone,
+    required String whatsApp,
   }) {
     emit(AppCreatePostLoadingState());
     PostModel model = PostModel(
@@ -317,6 +289,10 @@ class AppCubit extends Cubit<AppStates> {
       type: currenttypeValue,
       isnegotiate: false,
       bundel: currentbundleValue,
+      email: email,
+      phone: phone,
+      whatsApp: whatsApp,
+
     );
 
     FirebaseFirestore.instance
@@ -329,40 +305,6 @@ class AppCubit extends Cubit<AppStates> {
     });
   }
 
-
-  void CreateFurniturePost({
-    required String namefurniture,
-    required String description,
-    required String price,
-    required List furnitureImage,
-    required String date,
-  }) {
-    emit(AppCreateFurnitureLoadingState());
-    FurnitureModel model = FurnitureModel(
-      name: userModel!.name,
-      uid: userModel!.uid,
-      image: userModel!.image,
-      namefurniture: namefurniture,
-      description: description,
-      price: price,
-      furnitureImage: imagesUrl,
-      date: DateTime.now().toString(),
-      isnegotiate: false,
-      furniture: currentfurnitureValue,
-      type: CurrentTypesofSellingFurnitureValue,
-    );
-
-    FirebaseFirestore.instance
-        .collection('furniture')
-        .add(model.toMap())
-        .then((value) {
-      emit(AppCreateFurnitureSuccessState());
-    }).catchError((error) {
-      emit(AppCreateFurnitureErrorState(error.toString()));
-    });
-  }
-
-
   void removePostImage() {
     for (var i = 0; i > addImages.length; i++) {
       addImages[i] == null;
@@ -374,6 +316,7 @@ class AppCubit extends Cubit<AppStates> {
   List<PostModel> posts = [];
   List<String> postsId = [];
   PostModel? postModel;
+
   void getPosts() {
     posts = [];
     emit(AppGetPostsLoadingState());
@@ -382,6 +325,7 @@ class AppCubit extends Cubit<AppStates> {
         .orderBy('date', descending: true)
         .snapshots()
         .listen((event) {
+      posts = [];
       event.docs.forEach((element) {
         print(element.id);
         postsId.add(element.id);
@@ -402,7 +346,7 @@ class AppCubit extends Cubit<AppStates> {
         .then((value) {
       emit(AppRemoveFrompostsSuccessState());
       userposts = [];
-      getUserAds();
+      getPosts();
       print('delete sucssed');
       print('===================================================');
     }).catchError((error) {
@@ -417,6 +361,7 @@ class AppCubit extends Cubit<AppStates> {
   List<String> drobdownlist = [];
   CategoryDataModel? categoryDataModel;
   List<CategoryDataModel> categories = [];
+
   void getCategoryData() {
     categories = [];
     drobdownlist = [];
@@ -438,12 +383,89 @@ class AppCubit extends Cubit<AppStates> {
     });
   }
 
+  // Map<String, FavoriteDataModel> wishlist = {};
+  // Map<String, FavoriteDataModel> get getWishlistItems {
+  //   return wishlist;
+  // }
+
+  //  Future<void> addtoWishList({
+  //   required String? postid,
+  //   BuildContext? context,
+  // }) async {
+  //   final wislistId = const Uuid().v4();
+  //   try {
+  //     FirebaseFirestore.instance
+  //         .collection('users')
+  //         .doc(FirebaseAuth.instance.currentUser!.uid)
+  //         .update({
+  //       'userWish': FieldValue.arrayUnion([
+  //         {
+  //           'WishlistID': wislistId,
+  //           'postID': postid,
+  //         }
+  //       ])
+  //     });
+  //     await Fluttertoast.showToast(
+  //         msg: 'itemshas been added to your wishList ',
+  //         toastLength: Toast.LENGTH_SHORT,
+  //         gravity: ToastGravity.CENTER);
+  //   } catch (error) {
+  //     showToast(text: error.toString(), state: ToastStates.ERROR);
+  //   }
+  // }
+
+  // final usercollection = FirebaseFirestore.instance.collection('users');
+  // Future<void> fetchWishlist() async {
+  //   final DocumentSnapshot userDoc =
+  //       await usercollection.doc(FirebaseAuth.instance.currentUser!.uid).get();
+  //   if (userDoc == null) {
+  //     return;
+  //   }
+  //   final leng = userDoc.get('userWish').length;
+  //   for (var i = 0; i < leng; i++) {
+  //     wishlist.putIfAbsent(
+  //         userDoc.get('userWish')[i]['WishlistID'],
+  //         () => FavoriteDataModel(
+  //               postid: userDoc.get('userWish')[i]['postid'],
+  //               wishListId: userDoc.get('userWish')[i]['WishlistID'],
+  //             ));
+  //   }
+  //   emit(AppgetToFavoritesSuccessState());
+  // }
+
+  // Future<void> removeoneItem({
+  //   required String postid,
+  //   required String wishListId,
+  // }) async {
+  //   await usercollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
+  //     'userWish': FieldValue.arrayRemove([
+  //       {'postid': postid, 'WishlistID': wishListId}
+  //     ])
+  //   });
+  //   wishlist.remove(postid);
+  //   await fetchWishlist();
+
+  //   emit(AppRemoveFromFavoritesSuccessState());
+  // }
+
+  // Future<void> removeonclick() async {
+  //   await usercollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
+  //     'userWish': [],
+  //   });
+  //   wishlist.clear();
+  //   emit(Removeonclick());
+  // }
+
+  // void clearlocalWishlist() {
+  //   wishlist.clear();
+  //   emit(Removeonclick());
+  // }
+
   FavoriteDataModel? model;
   List<FavoriteDataModel> favorites = [];
+  List<String> favID = [];
 
-  void addtofav(
-    PostModel model,
-  ) {
+  void addtofav(PostModel model, String postid) {
     final FirebaseAuth auth = FirebaseAuth.instance;
     var currentUser = auth.currentUser;
     FavoriteDataModel favoriteDataModel = FavoriteDataModel(
@@ -481,11 +503,13 @@ class AppCubit extends Cubit<AppStates> {
         .collection('favorite')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('items')
+        .orderBy('date', descending: true)
         .snapshots()
         .listen((event) {
       event.docs.forEach((element) {
         favorites.add(FavoriteDataModel.fromJson(element.data()));
         model = FavoriteDataModel.fromJson(element.data());
+        favID.add(element.id);
 
         print(element.data());
       });
@@ -496,18 +520,22 @@ class AppCubit extends Cubit<AppStates> {
     emit(AppgetToFavoritesErrorState(error: Error.safeToString(Error)));
   }
 
-  void deletefavorite() {
+  void deletefavorite(String favid) {
     favorites = [];
     FirebaseFirestore.instance
         .collection('favorite')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('items')
-        .doc()
+        .doc(favid)
         .delete()
         .then((value) {
       emit(AppRemoveFromFavoritesSuccessState());
-      getfaviourite();
-      favorites = [];
+      print(
+          '===================================================================');
+
+      print(
+          '===================================================================');
+
       print(
           '===================================================================');
       print('deleted sucessfuly');
@@ -520,6 +548,7 @@ class AppCubit extends Cubit<AppStates> {
           '===================================================================');
     });
   }
+
   // message function
 
   List<UserModel> users = [];
@@ -602,6 +631,7 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   File? chatImage;
+
   Future<void> pickCatImage() async {
     final pickedfile = await picker.getImage(source: ImageSource.gallery);
     if (pickedfile != null) {
@@ -638,6 +668,7 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   List<PostModel> userposts = [];
+
   void getUserAds() {
     userposts = [];
     FirebaseFirestore.instance
@@ -667,6 +698,7 @@ class AppCubit extends Cubit<AppStates> {
   Position? currentposition;
   var lat;
   var long;
+
   Future getpermission(context) async {
     LocationPermission permission;
     services = await Geolocator.isLocationServiceEnabled();
@@ -767,6 +799,7 @@ class AppCubit extends Cubit<AppStates> {
   List<XFile> addImages = [];
   List<String> imagesUrl = [];
   var pickerimage = ImagePicker();
+
   Future<void> getImages() async {
     final List<XFile>? pickerimage = await picker.pickMultiImage();
     if (pickerimage!.isNotEmpty) {
@@ -818,6 +851,9 @@ class AppCubit extends Cubit<AppStates> {
     required String type,
     required bool isnegotiate,
     required String Bundle,
+    required String email,
+    required String whatsApp,
+    required String phone,
 
     // required String postImage,
   }) {
@@ -844,6 +880,9 @@ class AppCubit extends Cubit<AppStates> {
                 price: price,
                 postImage: imagesUrl,
                 date: date,
+                email: email,
+                phone: phone,
+                whatsApp: whatsApp,
               );
               print('==========================================');
               print('upload post successfuly ');
@@ -854,73 +893,10 @@ class AppCubit extends Cubit<AppStates> {
         });
       }
     }
-  }
-
-  void uploadFurnitureandimage({
-    required String namefurniture,
-    required String description,
-    required String price,
-    required String date,
-    required bool isnegotiate,
-    required String Furniture,
-    required String type,
-
-    // required String postImage,
-  }) {
-    emit(AppCreateFurnitureLoadingState());
-    if (addImages.isNotEmpty) {
-      for (int i = 0; i < addImages.length; i++) {
-        firebase_storage.FirebaseStorage.instance
-            .ref()
-            .child('furniture/${Uri.file(addImages[i].path).pathSegments.last}')
-            .putFile(File(addImages[i].path))
-            .then((value) {
-          value.ref.getDownloadURL().then((value) {
-            imagesUrl.add(value.toString());
-            print(imagesUrl);
-          }).then((value) {
-            if (imagesUrl.length == addImages.length) {
-              CreateFurniturePost(
-                namefurniture: namefurniture,
-                description: description,
-                price: price,
-                furnitureImage: imagesUrl,
-                date: date,
-              );
-              print('==========================================');
-              print('upload post successfuly ');
-            }
-          }).catchError((Error) {
-            emit(AppCreatePostErrorState(Error.toString()));
-          });
-        });
-      }
-    }
-  }
-
-
-
-  List<PostModel> searchADS = [];
-  void getsearch({required String place}) {
-    emit(AppGetPostsLoadingState());
-    searchADS = [];
-    FirebaseFirestore.instance
-        .collection('posts')
-        .where('place', isEqualTo: place)
-        .get()
-        .then((event) {
-      event.docs.forEach((element) {
-        searchADS = [];
-        searchADS.add(PostModel.fromJson(element.data()));
-        print(element.data());
-        print('=================================================>>>');
-      });
-      emit(AppGetSearchADSSuccessState());
-    });
-    emit(AppGetSearchADSErrorState(Error.safeToString(Error)));
   }
 
   List<PostModel> filterAds = [];
+
   //List<PostModel> addDataIds = [];
   void filter_search({
     required String place,
@@ -929,33 +905,35 @@ class AppCubit extends Cubit<AppStates> {
     required String no_bath,
     required String area,
     required String price,
+    required String type,
   }) {
     filterAds = [];
     emit(AppGetFilterADSloadingState());
-    FirebaseFirestore.instance.collection('posts').get().then((event) {
+    FirebaseFirestore.instance.collection('posts').snapshots().listen((event) {
       filterAds = [];
-      postsId = [];
       for (var element in event.docs) {
         if (place == element.data()['place'] &&
             category == element.data()['category'] &&
             no_bath == element.data()['no_of_bathroom'] &&
             no_rooms == element.data()['no_of_room'] &&
             area == element.data()['area'] &&
-            price == element.data()['price']) {
+            price == element.data()['price'] &&
+            type == element.data()['type']) {
           filterAds.add(PostModel.fromJson(element.data()));
-          print(element.data());
         }
-        emit(AppGetFilterADSSuccessState());
         print(element.data());
-        log('=============================================>>>>>>');
-        log('success huyyy ');
       }
+      emit(AppGetFilterADSSuccessState());
+
+      log('جااااااااااااااااااااااااااااااب جااااااااااااتوه');
+      log('=============================================>>>>>>');
     });
     emit(AppGetFilterADSErrorState(Error.safeToString(Error)));
   }
 
   ServicesModel? servicesModel;
   List<ServicesModel> Service = [];
+
   void getservice() {
     emit(AppGetServicesloadingState());
     Service = [];
@@ -976,6 +954,7 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   List<ServicesModel> LawServices = [];
+
   void getLawService() {
     emit(AppGetServicesloadingState());
     LawServices = [];
@@ -994,9 +973,29 @@ class AppCubit extends Cubit<AppStates> {
     emit(AppGetServicesErrorState(Error.safeToString(Error())));
   }
 
+  List<PostModel> searchADS = [];
+
+  void getsearch({required String? place}) {
+    emit(AppGetPostsLoadingState());
+    FirebaseFirestore.instance
+        .collection('posts')
+        .where('place', isEqualTo: place)
+        .snapshots()
+        .listen((event) {
+      event.docs.forEach((element) {
+        searchADS.add(PostModel.fromJson(element.data()));
+        print(element.data());
+        print('=================================================>>>');
+        emit(AppGetSearchADSSuccessState());
+      });
+      emit(AppGetSearchADSErrorState(Error.safeToString(Error)));
+    });
+  }
+
   BunndelModel? bunndelModel;
   List<String> BundeList = [];
   List<BunndelModel> Bundel = [];
+
   void getBundle() {
     Bundel = [];
     BundeList = [];
@@ -1018,56 +1017,6 @@ class AppCubit extends Cubit<AppStates> {
     });
   }
 
-
-
-  List<FurnitureModel> furnitureModel = [];
-  List<String> furnituresId = [];
-  FurnitureModel? furniture;
-  void getFurnitures() {
-    furnitureModel = [];
-    emit(AppGetFurnituresLoadingState());
-    FirebaseFirestore.instance
-        .collection('furniture')
-        .orderBy('date', descending: true)
-        .snapshots()
-        .listen((event) {
-      event.docs.forEach((element) {
-        print(element.id);
-        furnituresId.add(element.id);
-        //  comments.add(SocialCommentPostModel.fromJson(element.data()));
-        furnitureModel.add(FurnitureModel.fromJson(element.data()));
-      });
-      emit(AppGetFurnitureSuccessState());
-    });
-    emit(AppGetFurnitureErrorState(Error.safeToString(Error)));
-  }
-
-
-  // FurnitureModel? furnitureModel;
-  // List<String> FurnitureList = [];
-  // List<FurnitureModel> Furniture = [];
-  // void getFurniture() {
-  //   Furniture = [];
-  //   FurnitureList = [];
-  //   emit(AppGetFurnituresLoadingState());
-  //   FirebaseFirestore.instance.collection('furniture').get().then((value) {
-  //     value.docs.forEach((element) {
-  //       Furniture.add(FurnitureModel.fromJson(element.data()));
-  //       print(element.data());
-  //     });
-  //     for (int i = 0; i < Furniture.length; i++) {
-  //       FurnitureList.add(Furniture[i].namefurniture.toString());
-  //     }
-  //     emit(AppGetFurnitureSuccessState());
-  //
-  //     print(Furniture);
-  //     print(FurnitureList);
-  //   }).catchError((error) {
-  //     print(error.toString());
-  //     emit(AppGetFurnitureErrorState(error));
-  //   });
-  // }
-
 //////////////// send notification
   void getUserToken() async {
     emit(GetTokenLoadingState());
@@ -1082,41 +1031,91 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   void sendNotification(
-      {required String token,
-      required String senderName,
-      String? messageText,
-      String? messageImage}) {
-    Diohelper.postnotificationData(data: {
-      "to": token,
+    UserModel model,
+    MessageModel messageModel,
+  ) {
+    notificationHelper
+        .postData(url: 'https://fcm.googleapis.com/fcm/send', data: {
+      "to": userModel!.token,
       "notification": {
-        "title": senderName,
-        "body":
-            "${messageText != null ? messageText : messageImage != null ? messageImage : 'ERROR 404'}",
+        "body": messageModel.text,
+        "title": userModel!.name,
         "sound": "default"
       },
       "android": {
-        "Priority": "HIGH",
+        "priortiy": "HIGH",
         "notification": {
-          "notification_Priority": "PRIORITY_MAX",
+          "notification_priority": "PRIORITY_MAX",
           "sound": "default",
-          "default_sound": true,
           "default_vibrate_timings": true,
           "default_light_settings": true
         }
       },
-      "data": {
-        "type": "order",
-        "id": "87",
-        "click_action": "FLUTTER_NOTIFICATION_CLICK",
-        "navigation": "chatDetails"
-      }
+      "data": {"messageModel": messageModel.toMap()}
+    }).then((value) {
+      print("notification pushed");
+    }).catchError((error) {
+      print(error.toString());
     });
-    emit(SendNotificationSuccessState());
-    print('==========================================>');
-    print('notification send succesfully');
   }
-}
- 
+
+
+
+  void CreateContactUs({
+    required String name,
+    required String email,
+    required String phone,
+    required String problem,
+
+  }) {
+    emit(AppCreateContactUsLoadingState());
+    ContactUsModel model = ContactUsModel(
+      name: userModel!.name,
+      uid: userModel!.uid,
+      phone: phone,
+      problem: problem,
+      email: email,
+    );
+
+    FirebaseFirestore.instance
+        .collection('ContactUs')
+        .add(model.toMap())
+        .then((value) {
+      emit(AppCreateContactUsSuccessState());
+    }).catchError((error) {
+      emit(AppCreateContactUsErrorState(error.toString()));
+    });
+  }
+
+
+/*
+  void pushNotificationOnsendMessage( 
+       MessageModel messageModel, UserModel userModel) { 
+     print("device token :" + userModel.deviceToken.toString()); 
+     DioHelper.postData(url: 'https://fcm.googleapis.com/fcm/send', data: { 
+       "to": userModel.deviceToken, 
+       "notification": { 
+         "body": messageModel.text, 
+         "title": userModel.name,
+         "sound": "default" 
+       }, 
+       "android": { 
+         "priortiy": "HIGH", 
+         "notification": { 
+           "notification_priority": "PRIORITY_MAX", 
+           "sound": "default", 
+           "default_vibrate_timings": true, 
+           "default_light_settings": true 
+         } 
+       }, 
+       "data": {"messageModel": messageModel.toJson()} 
+     }).then((value) { 
+       print("notification pushed"); 
+     }).catchError((error) { 
+       print(error.toString()); 
+     }); 
+   }
+   */
 /*
   void getAddsDataByFilter({
     required String minPrice,
@@ -1150,3 +1149,4 @@ class AppCubit extends Cubit<AppStates> {
     });
   }
   */
+}

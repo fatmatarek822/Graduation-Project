@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:realestateapp/models/category_model.dart';
 import 'package:realestateapp/models/post_model.dart';
 import 'package:realestateapp/models/user_model.dart';
@@ -31,13 +30,14 @@ class rentcategory extends StatelessWidget {
           return Scaffold(
             appBar: AppBar(
               title: Text(
-                categoryDataModel!.categoryName.toString().toUpperCase(),
-                style: const TextStyle(color: Colors.black),
+                categoryDataModel!.categoryName.toString(),
+                style: TextStyle(
+
+                ),
               ),
               leading: IconButton(
                 icon: const Icon(
                   Icons.arrow_back,
-                  color: Colors.black,
                 ),
                 onPressed: () {
                   Navigator.pop(context);
@@ -150,25 +150,26 @@ class rentcategory extends StatelessWidget {
                             color: white,
                             borderRadius: BorderRadius.circular(15)),
                         child: IconButton(
-                          icon: AppCubit.get(context).favorites.length == 0
-                              ? const Icon(
-                                  Icons.favorite_rounded,
-                                )
-                              : const Icon(
-                                  Icons.favorite_rounded,
-                                  color: Colors.red,
-                                ),
-                          onPressed: () {
-                            AppCubit.get(context).favorites.length == 0
-                                ? AppCubit.get(context).addtofav(
-                                    AppCubit.get(context).posts[index],
-                                  //  AppCubit.get(context).postsId[index],
-                                  )
-                                : showToast(
-                                    text: 'aleardy added',
-                                    state: ToastStates.WARNING);
-                          },
-                        ),
+                            // icon: AppCubit.get(context).favorites.length == 0
+                            //     ? const Icon(
+                            //         Icons.favorite_rounded,
+                            //       )
+                            //     : const Icon(
+                            //         Icons.favorite_rounded,
+                            //         color: Colors.red,
+                            //       ),
+                            onPressed: () {
+                              // AppCubit.get(context).favorites.length == 0
+                              //     ? AppCubit.get(context).addtofav(
+                              //         AppCubit.get(context).posts[index],
+                              //       )
+                              //     : showToast(
+                              //         text: 'aleardy added',
+                              //         state: ToastStates.WARNING);
+                            },
+                            icon: const Icon(
+                              Icons.favorite_rounded,
+                            )),
                       ),
                     )
                   ],

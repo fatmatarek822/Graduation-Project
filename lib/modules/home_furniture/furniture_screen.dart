@@ -1,3 +1,4 @@
+/*
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -296,3 +297,6 @@ class FurnitureScreen extends StatelessWidget {
   }
 
 }
+
+
+ */

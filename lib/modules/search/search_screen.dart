@@ -24,12 +24,13 @@ class SearchScreen extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
             appBar: AppBar(
-              title: Text('search'.tr().toString()),
+              title: Text('Search'.tr().toString()),
               leading: IconButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  icon: const Icon(Icons.arrow_back)),
+                  icon: const Icon(Icons.arrow_back),
+              ),
             ),
             body: Padding(
                 padding: const EdgeInsets.all(10.0),
@@ -38,7 +39,7 @@ class SearchScreen extends StatelessWidget {
                     defaultFormField(
                       controller: searchcontroller,
                       onSubmit: (place) {
-                        AppCubit.get(context).getsearch(place: place!);
+                        AppCubit.get(context).getsearch(place: place);
                       },
                       type: TextInputType.text,
                       validate: (value) {},
@@ -46,7 +47,7 @@ class SearchScreen extends StatelessWidget {
                       prefix: Icons.search_rounded,
                     ),
                     ConditionalBuilder(
-                        condition: AppCubit.get(context).searchADS.isEmpty,
+                        condition: AppCubit.get(context).searchADS !=null,
                         builder: (context) => Stack(
                               alignment: AlignmentDirectional.bottomEnd,
                               children: [
@@ -75,6 +76,7 @@ class SearchScreen extends StatelessWidget {
                                 ),
                               ],
                             ),
+                        // ignore: prefer_is_empty
                         fallback: (context) => AppCubit.get(context)
                                     .searchADS
                                     .length ==
@@ -140,8 +142,8 @@ class SearchScreen extends StatelessWidget {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(20),
                       child: Container(
-                        width: 200.0,
-                        height: 100.0,
+                        width: 180.0,
+                        height: 150.0,
                         child: PageView.builder(
                           controller: AdsImages,
                           scrollDirection: Axis.horizontal,
@@ -157,16 +159,39 @@ class SearchScreen extends StatelessWidget {
                     const SizedBox(width: 8.0),
                     Column(
                       children: [
-                        Text(' ${model.name}  '),
-                        const SizedBox(height: 8.0),
-                        Text(' ${model.place} '),
-                        const SizedBox(height: 8.0),
-                        Text(
-                          '${model.category}',
-                          style: const TextStyle(fontSize: 10.0),
+                        Text('${model.type}'),
+                        const Divider(),
+                        Text(' ${model.place}  '),
+                        const Divider(),
+                        Text(' ${model.name} '),
+                        const Divider(),
+                        Row(
+                          children: [
+                            Text(
+                              '${model.no_of_room} bedrooms / ',
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Text(
+                              '${model.no_of_bathroom} bathrooms / ',
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Text(
+                              '${model.area} sqft',
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),

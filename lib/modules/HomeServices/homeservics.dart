@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:realestateapp/models/servicesmodel.dart';
 import 'package:realestateapp/models/servicesmodel.dart';
 import 'package:realestateapp/models/servicesmodel.dart';
@@ -27,14 +28,15 @@ class AppServices extends StatelessWidget {
             length: 2,
             child: Scaffold(
                 appBar: AppBar(
-                  bottom: const TabBar(tabs: [
+                  bottom: const TabBar(tabs:
+                  [
                     Tab(
                       icon: Icon(Icons.home_repair_service),
-                      text: 'Home service',
+                      text: 'Home services',
                     ),
                     Tab(
                       icon: Icon(Icons.balance_sharp),
-                      text: 'laywer service',
+                      text: 'law services',
                     ),
                   ]),
                 ),
@@ -58,7 +60,14 @@ class AppServices extends StatelessWidget {
                                           index,
                                           context),
                                   separatorBuilder: (context, index) =>
-                                      const Divider(),
+                                      Padding(
+                                        padding: const EdgeInsets.all(20.0),
+                                        child: Container(
+                                          height: 2,
+                                          width: double.infinity,
+                                          color: AppCubit.get(context).isDark? Colors.grey: Colors.white,
+                                        ),
+                                      ),
                                   itemCount:
                                       AppCubit.get(context).Service.length,
                                 ),
@@ -112,8 +121,8 @@ class AppServices extends StatelessWidget {
                             return Column(
                               children: [
                                 ListView.separated(
+                                  physics: BouncingScrollPhysics(),
                                   // scrollDirection: Axis.vertical,
-                                  physics: const BouncingScrollPhysics(),
                                   shrinkWrap: true,
                                   itemBuilder: (context, index) =>
                                       BuidServicesItems(
@@ -122,7 +131,14 @@ class AppServices extends StatelessWidget {
                                           index,
                                           context),
                                   separatorBuilder: (context, index) =>
-                                      const Divider(),
+                                       Padding(
+                                         padding: const EdgeInsets.all(20.0),
+                                         child: Container(
+                                           height: 2,
+                                          width: double.infinity,
+                                           color: AppCubit.get(context).isDark? Colors.grey: Colors.white,
+                                      ),
+                                       ),
                                   itemCount:
                                       AppCubit.get(context).LawServices.length,
                                 ),
@@ -150,7 +166,7 @@ class AppServices extends StatelessWidget {
                                             height: 6.0,
                                           ),
                                           Text(
-                                            ' explore other services ',
+                                            ' Explore other services ',
                                             style: TextStyle(
                                                 fontSize: 15.0,
                                                 fontWeight: FontWeight.bold,
@@ -188,7 +204,7 @@ class AppServices extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: appPadding / 2),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: Colors.white,
+                  color: AppCubit.get(context).isDark? Colors.white : HexColor('#333739'),
                 ),
                 width: double.infinity,
                 height: 146.0,
@@ -206,16 +222,19 @@ class AppServices extends StatelessWidget {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                             Text(' ${model.companyName}  '.tr().toString(),
-                               overflow: TextOverflow.ellipsis,
-                               maxLines: 2,
-                             ),
-                             const SizedBox(height: 8.0),
+                            Text(
+                              ' ${model.companyName}  '.tr().toString(),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                            ),
+                            const SizedBox(height: 8.0),
                             Text('${model.serviceType} '),
                             const SizedBox(height: 8.0),
                             Text(
                               '  ${model.location}',
-                              style: const TextStyle(fontSize: 10.0, overflow: TextOverflow.ellipsis),
+                              style: const TextStyle(
+                                  fontSize: 10.0,
+                                  overflow: TextOverflow.ellipsis),
                               maxLines: 2,
                             ),
                             const SizedBox(height: 10.0),

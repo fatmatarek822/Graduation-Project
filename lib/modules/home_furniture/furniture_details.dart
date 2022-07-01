@@ -1,3 +1,4 @@
+/*
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,7 +34,6 @@ class FurnitureDetails extends StatelessWidget {
             leading: IconButton(
               icon: const Icon(
                 Icons.arrow_back,
-                color: Colors.black,
               ),
               onPressed: () {
                 Navigator.pop(context);
@@ -138,7 +138,7 @@ class FurnitureDetails extends StatelessWidget {
                   expansionFactor: 4,
                   dotWidth: 10,
                   spacing: 5.0,
-                  activeDotColor: Colors.lightBlue,
+                  activeDotColor: Colors.greenAccent,
                 ),
               ),
             ],
@@ -146,40 +146,28 @@ class FurnitureDetails extends StatelessWidget {
           Row(children: [
             const Icon(
               Icons.category_outlined,
-              color: Colors.black,
             ),
             Text(
               'Type of Furniture',
-              style: TextStyle(
-                color: Colors.black,
-              ),
             ),
             const Spacer(),
             Text(
               '${model.furniture}',
-              style: const TextStyle(
-                color: Colors.black,
-              ),
             ),
           ]),
           myDivider(),
           Row(children: [
             const Icon(
               Icons.house_outlined,
-              color: Colors.black,
             ),
             const Text(
               ' name',
               style: TextStyle(
-                color: Colors.black,
               ),
             ),
             Spacer(),
             Text(
               '${model.namefurniture}',
-              style: const TextStyle(
-                color: Colors.black,
-              ),
             ),
           ]),
           myDivider(),
@@ -193,9 +181,6 @@ class FurnitureDetails extends StatelessWidget {
                     Text(
                       ' description'.tr().toString(),
                       maxLines: 6,
-                      style: TextStyle(
-                        color: Colors.black,
-                      ),
                     ),
                   ],
                 ),
@@ -208,9 +193,6 @@ class FurnitureDetails extends StatelessWidget {
                   child: Text(
                     '${model.description}',
                     maxLines: 15,
-                    style: const TextStyle(
-                      color: Colors.black,
-                    ),
                   ),
                 ),
               ]),
@@ -218,43 +200,31 @@ class FurnitureDetails extends StatelessWidget {
           Row(children: [
             const Icon(
               Icons.gps_fixed_rounded,
-              color: Colors.black,
             ),
             Text(
               ' location'.tr().toString(),
-              style: TextStyle(
-                color: Colors.black,
-              ),
             ),
             Spacer(),
             Text(
               '${model.place}',
-              style: const TextStyle(
-                color: Colors.black,
-              ),
             ),
           ]),
           myDivider(),
           Row(children: [
             const Icon(
               Icons.price_change_rounded,
-              color: Colors.black,
             ),
             Text(
               'the price'.tr().toString(),
-              style: TextStyle(
-                color: Colors.black,
-              ),
             ),
             const Spacer(),
             Text(
               '${model.price}',
-              style: const TextStyle(
-                color: Colors.black,
-              ),
             ),
           ]),
           myDivider(),
         ]));
   }
 }
+
+ */

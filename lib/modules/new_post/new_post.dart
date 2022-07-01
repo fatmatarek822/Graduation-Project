@@ -10,10 +10,9 @@ import 'package:realestateapp/models/BundleModel.dart';
 import 'package:realestateapp/modules/cubit/cubit.dart';
 import 'package:realestateapp/modules/cubit/states.dart';
 import 'package:realestateapp/modules/home/home_screen.dart';
+import 'package:realestateapp/modules/map/map.dart';
 import 'package:realestateapp/modules/map/map_screen.dart';
-import 'package:realestateapp/modules/new_post/userLocation.dart';
 import 'package:realestateapp/shared/components/components.dart';
-
 import '../../shared/components/constant.dart';
 
 class NewPost extends StatefulWidget {
@@ -24,22 +23,17 @@ class NewPost extends StatefulWidget {
 class _NewPostState extends State<NewPost> {
   bool isnogiate = false;
   var formKey = GlobalKey<FormState>();
-
   var NamePostController = TextEditingController();
-
   var DescriptionController = TextEditingController();
-
   var PlaceController = TextEditingController();
-
   var no_of_roomsController = TextEditingController();
-
   var no_of_bathroomController = TextEditingController();
-
   var AreaController = TextEditingController();
-
   var PriceController = TextEditingController();
   var datecontroller = TextEditingController();
   var phonecontroller = TextEditingController();
+  var phoneNumberWhatsAppController = TextEditingController();
+  var emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -48,17 +42,18 @@ class _NewPostState extends State<NewPost> {
       listener: (context, state) {
         if (state is AppCreatePostSuccessState) {
           showToast(
-              text: 'post created successfuly'.tr().toString(),
+              text: 'post created successfully'.tr().toString(),
               state: ToastStates.SUCCESS);
-          AppCubit.get(context).getPosts();
           navigateTo(context, LayoutScreen());
         }
       },
       builder: (context, state) {
         var userModel = AppCubit.get(context).userModel;
-        phonecontroller.text = userModel!.phone!;
+       // phonecontroller.text = userModel!.phone!;
         return Scaffold(
-
+          appBar: AppBar(
+            title: Text('New Post'.tr().toString()),
+          ),
           body: Padding(
             padding: const EdgeInsets.all(10.0),
             child: SingleChildScrollView(
@@ -138,7 +133,7 @@ class _NewPostState extends State<NewPost> {
                                   const EdgeInsets.fromLTRB(10, 20, 10, 20),
                               filled: true,
                               fillColor: Colors.grey[200],
-                              hintText: 'select type  like rent or Buy '
+                              hintText: 'Select type like Rent or Buy '
                                   .tr()
                                   .toString(),
                             ),
@@ -151,7 +146,7 @@ class _NewPostState extends State<NewPost> {
                             type: TextInputType.text,
                             validate: (value) {
                               if (value!.isEmpty) {
-                                return 'Please Enter Name of Advertisment'
+                                return 'Please Enter Name of Advertisement'
                                     .tr()
                                     .toString();
                               }
@@ -168,22 +163,11 @@ class _NewPostState extends State<NewPost> {
                             maxLines: null,
                             decoration: InputDecoration(
                                 prefixIcon: const Icon(Icons.description),
-                                hintText: 'describtion'.tr().toString(),
+                                hintText: 'Description'.tr().toString(),
                                 border: const OutlineInputBorder()),
                           ),
-                          /*
-                          defaultFormField(
-                            controller: DescriptionController,
-                            type: TextInputType.multiline,
-                            validate: (value) {
-                              if (value!.isEmpty) {
-                                return 'Please Enter Description';
-                              }
-                            },
-                            label: 'Description',
-                            prefix: Icons.description,
-                          ),
-                          */
+
+
                           const SizedBox(
                             height: 8.0,
                           ),
@@ -206,19 +190,20 @@ class _NewPostState extends State<NewPost> {
                               filled: true,
                               fillColor: Colors.grey[200],
                               hintText:
-                                  'select your catergory '.tr().toString(),
+                                  'Select your category '.tr().toString(),
                             ),
                           ),
                           const SizedBox(
                             height: 8.0,
                           ),
-
+                          const SizedBox(
+                            height: 10,
+                          ),
                           defaultFormField(
                             controller: PlaceController,
                             onChange: (location) {},
                             ontap: () {
                               navigateTo(context, MapScreen());
-                              AppCubit.get(context).getlatAndlang();
                             },
                             type: TextInputType.text,
                             validate: (value) {
@@ -226,7 +211,7 @@ class _NewPostState extends State<NewPost> {
                                 return 'Please Enter place'.tr().toString();
                               }
                             },
-                            label: 'select the location'.tr().toString(),
+                            label: 'Select the location'.tr().toString(),
                             prefix: Icons.place,
                           ),
                           const SizedBox(
@@ -237,7 +222,7 @@ class _NewPostState extends State<NewPost> {
                             type: TextInputType.text,
                             validate: (value) {
                               if (value!.isEmpty) {
-                                return 'Please Enter no_of_rooms'
+                                return 'Please Enter no of rooms'
                                     .tr()
                                     .toString();
                               }
@@ -253,7 +238,7 @@ class _NewPostState extends State<NewPost> {
                             type: TextInputType.text,
                             validate: (value) {
                               if (value!.isEmpty) {
-                                return 'Please Enter no_of_bathrooms'
+                                return 'Please Enter no of bathrooms'
                                     .tr()
                                     .toString();
                               }
@@ -278,7 +263,7 @@ class _NewPostState extends State<NewPost> {
                           const SizedBox(
                             height: 10,
                           ),
-                          Text('negotaiate'.tr().toString()),
+                          Text('Negotiability'.tr().toString()),
                           Checkbox(
                               value: isnogiate,
                               onChanged: (value) {
@@ -304,18 +289,54 @@ class _NewPostState extends State<NewPost> {
                             height: 10,
                           ),
                           defaultFormField(
-                            controller: phonecontroller,
-                            type: TextInputType.phone,
+                            controller: emailController,
+                            type: TextInputType.text,
                             validate: (value) {
                               if (value!.isEmpty) {
-                                return 'phone number is reqierd '
+                                return 'Please Enter Your Email'
                                     .tr()
                                     .toString();
                               }
                             },
-                            label: 'phone '.tr().toString(),
+                            label: 'Email'.tr().toString(),
+                            prefix: Icons.drive_file_rename_outline,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          defaultFormField(
+                            controller: phonecontroller,
+                            type: TextInputType.phone,
+                            validate: (value) {
+                              if (value!.isEmpty) {
+                                return 'Phone number is Required '
+                                    .tr()
+                                    .toString();
+                              }
+                            },
+                            label: 'Phone '.tr().toString(),
                             prefix: Icons.price_change_outlined,
                           ),
+
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          defaultFormField(
+                            controller: phoneNumberWhatsAppController,
+                            type: TextInputType.phone,
+                            validate: (value) {
+                              if (value!.isEmpty) {
+                                return 'WhatsApp Phone number is Required '
+                                    .tr()
+                                    .toString();
+                              }
+                            },
+                            label: 'WhatsApp Phone '.tr().toString(),
+                            prefix: Icons.price_change_outlined,
+                          ),
+
+
+
                           const SizedBox(
                             height: 10.0,
                           ),
@@ -336,7 +357,7 @@ class _NewPostState extends State<NewPost> {
                               filled: true,
                               fillColor: Colors.grey[200],
                               hintText:
-                                  'select your bundel like  gold or silver '
+                                  'Select your Bundle like  Gold or Silver '
                                       .tr()
                                       .toString(),
                             ),
@@ -403,13 +424,18 @@ class _NewPostState extends State<NewPost> {
                                 price: PriceController.text.toString(),
                                 category:
                                     AppCubit.get(context).categories.toString(),
-                                date: DateTime.now().toString());
-                          }
+                                date: DateTime.now().toString(),
+                                email: emailController.text,
+                                whatsApp: phoneNumberWhatsAppController.text,
+                                phone: phonecontroller.text,
+                            );
 
+                          }
                         }
                       },
                       child: Text(
-                        'Add Post'.tr().toString(),
+                        'Add Post'.tr().toString(),style:TextStyle(color: Colors.greenAccent),
+
                       ),
                     ),
                   ],

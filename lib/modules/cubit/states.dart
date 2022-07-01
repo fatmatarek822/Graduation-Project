@@ -15,8 +15,6 @@ class AppGetUserErrorState extends AppStates {
 
 class AppChangeBottomNavState extends AppStates {}
 
-class OpenFurnitureScreenState extends AppStates{}
-
 class ProfileImagePickedSuccessState extends AppStates {}
 
 class ProfileImagePickedErrorState extends AppStates {}
@@ -196,24 +194,13 @@ class SendNotificationSuccessState extends AppStates {}
 
 class PickedChatImageSuccessState extends AppStates {}
 
-class AppGetFurnituresLoadingState extends AppStates{}
+class Removeonclick extends AppStates {}
 
-class AppGetFurnitureSuccessState extends AppStates{}
+class AppCreateContactUsLoadingState extends AppStates{}
 
-class AppGetFurnitureErrorState extends AppStates{
+class AppCreateContactUsSuccessState extends AppStates{}
+
+class AppCreateContactUsErrorState extends AppStates{
   final String error;
-  AppGetFurnitureErrorState(this.error);
-}
-
-class FurnitureListChangeState extends AppStates {}
-
-class TypesOfSellingFurnitureChangeState extends AppStates {}
-
-class AppCreateFurnitureLoadingState extends AppStates{}
-
-class AppCreateFurnitureSuccessState extends AppStates{}
-
-class AppCreateFurnitureErrorState extends AppStates{
-  final String error;
-  AppCreateFurnitureErrorState(this.error);
+  AppCreateContactUsErrorState(this.error);
 }
