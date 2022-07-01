@@ -21,7 +21,7 @@ class NewPost extends StatefulWidget {
 }
 
 class _NewPostState extends State<NewPost> {
-  bool isnogiate = false;
+  bool isnegotiate = false;
   var formKey = GlobalKey<FormState>();
   var NamePostController = TextEditingController();
   var DescriptionController = TextEditingController();
@@ -265,10 +265,12 @@ class _NewPostState extends State<NewPost> {
                           ),
                           Text('Negotiability'.tr().toString()),
                           Checkbox(
-                              value: isnogiate,
-                              onChanged: (value) {
+                              value: isnegotiate,
+                              onChanged: (val) {
                                 setState(() {
-                                  isnogiate = value!;
+                                  isnegotiate = val!;
+                                  print(val);
+                                  print(isnegotiate);
                                 });
                               }),
                           const SizedBox(
@@ -413,7 +415,7 @@ class _NewPostState extends State<NewPost> {
                           if (state is PostImagePickedSuccessState) {
                             AppCubit.get(context).uploadpostandimage(
                                 Bundle: AppCubit.get(context).Bundel.toString(),
-                                isnegotiate: false,
+                                isnegotiate: isnegotiate,
                                 type: AppCubit.get(context).AdsType.toString(),
                                 namePost: NamePostController.text,
                                 description: DescriptionController.text,

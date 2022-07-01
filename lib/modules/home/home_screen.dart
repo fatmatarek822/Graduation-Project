@@ -298,6 +298,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 Row(
                   children: [
+                    const Icon(Icons.place_outlined),
+                    const SizedBox(
+                      width: 5,
+                    ),
                     Text(
                       '${model.place}',
                       style: const TextStyle(
@@ -321,18 +325,31 @@ class _HomeScreenState extends State<HomeScreen> {
                 Row(
                   children: [
                     Text(
-                      '${model.no_of_room} Bedrooms / ',
+                      '${model.no_of_room}',
                       style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Icon(Icons.bed_outlined),                    SizedBox(
+                      width: 20,
+                    ),
                     Text(
-                      '${model.no_of_bathroom} Bathrooms / ',
+                      '${model.no_of_bathroom}',
                       style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
                       ),
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Icon(Icons.bathtub_outlined),
+                    SizedBox(
+                      width: 20,
                     ),
                     Text(
                       '${model.area} sqft',
@@ -341,13 +358,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Icon(Icons.area_chart_outlined),
                   ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(Icons.price_check_rounded),
                     Text(
                       '${model.price} Eg',
                       style: const TextStyle(
@@ -355,6 +375,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Icon(Icons.price_change_outlined),
 
                   ],
                 )

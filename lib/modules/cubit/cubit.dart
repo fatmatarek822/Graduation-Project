@@ -270,6 +270,7 @@ class AppCubit extends Cubit<AppStates> {
     required String email,
     required String phone,
     required String whatsApp,
+    required bool isnegotiate,
   }) {
     emit(AppCreatePostLoadingState());
     PostModel model = PostModel(
@@ -287,7 +288,7 @@ class AppCubit extends Cubit<AppStates> {
       category: currentvalue,
       date: DateTime.now().toString(),
       type: currenttypeValue,
-      isnegotiate: false,
+      isnegotiate: isnegotiate,
       bundel: currentbundleValue,
       email: email,
       phone: phone,
@@ -883,6 +884,7 @@ class AppCubit extends Cubit<AppStates> {
                 email: email,
                 phone: phone,
                 whatsApp: whatsApp,
+                isnegotiate: isnegotiate,
               );
               print('==========================================');
               print('upload post successfuly ');

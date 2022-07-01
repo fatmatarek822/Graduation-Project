@@ -65,7 +65,7 @@ class PostModel {
     isfav = json['isfav'];
     bundel = json['bundel'];
     type = json['type'];
-    isnegotiate = json['isnegatiated'];
+    isnegotiate = json['isnegotiate'];
     services = json['services'];
     email = json ['email'];
     phone = json ['phone'];
